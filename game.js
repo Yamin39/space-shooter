@@ -90,22 +90,55 @@ class SpaceDefender {
     document.addEventListener('keydown', (e) => this.handleKeyDown(e));
     document.addEventListener('keyup', (e) => this.handleKeyUp(e));
     
-    // UI button controls
-    document.getElementById('startButton').addEventListener('click', () => this.startGame());
-    document.getElementById('startButton').addEventListener('touchend', (e) => {
+    // UI button controls - Enhanced for mobile
+    const startButton = document.getElementById('startButton');
+    const restartButton = document.getElementById('restartButton');
+    const mainMenuButton = document.getElementById('mainMenuButton');
+    
+    // Start button - multiple event types for better mobile support
+    startButton.addEventListener('click', (e) => {
       e.preventDefault();
+      e.stopPropagation();
+      console.log('Start button clicked');
       this.startGame();
     });
     
-    document.getElementById('restartButton').addEventListener('click', () => this.restartGame());
-    document.getElementById('restartButton').addEventListener('touchend', (e) => {
+    startButton.addEventListener('touchstart', (e) => {
       e.preventDefault();
+      e.stopPropagation();
+      console.log('Start button touched');
+    });
+    
+    startButton.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Start button touchend');
+      this.startGame();
+    });
+    
+    // Restart button
+    restartButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       this.restartGame();
     });
     
-    document.getElementById('mainMenuButton').addEventListener('click', () => this.showMainMenu());
-    document.getElementById('mainMenuButton').addEventListener('touchend', (e) => {
+    restartButton.addEventListener('touchend', (e) => {
       e.preventDefault();
+      e.stopPropagation();
+      this.restartGame();
+    });
+    
+    // Main menu button
+    mainMenuButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.showMainMenu();
+    });
+    
+    mainMenuButton.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       this.showMainMenu();
     });
     
@@ -117,6 +150,11 @@ class SpaceDefender {
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
         e.preventDefault();
       }
+    });
+    
+    // Add touch event debugging
+    document.addEventListener('touchstart', (e) => {
+      console.log('Touch started on:', e.target);
     });
   }
 
@@ -132,11 +170,19 @@ class SpaceDefender {
     // Left button
     leftBtn.addEventListener('touchstart', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this.keys['a'] = true;
       leftBtn.classList.add('pressed');
     });
     
     leftBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.keys['a'] = false;
+      leftBtn.classList.remove('pressed');
+    });
+    
+    leftBtn.addEventListener('touchcancel', (e) => {
       e.preventDefault();
       this.keys['a'] = false;
       leftBtn.classList.remove('pressed');
@@ -145,11 +191,19 @@ class SpaceDefender {
     // Right button
     rightBtn.addEventListener('touchstart', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this.keys['d'] = true;
       rightBtn.classList.add('pressed');
     });
     
     rightBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.keys['d'] = false;
+      rightBtn.classList.remove('pressed');
+    });
+    
+    rightBtn.addEventListener('touchcancel', (e) => {
       e.preventDefault();
       this.keys['d'] = false;
       rightBtn.classList.remove('pressed');
@@ -158,11 +212,19 @@ class SpaceDefender {
     // Shoot button
     shootBtn.addEventListener('touchstart', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this.keys[' '] = true;
       shootBtn.classList.add('pressed');
     });
     
     shootBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.keys[' '] = false;
+      shootBtn.classList.remove('pressed');
+    });
+    
+    shootBtn.addEventListener('touchcancel', (e) => {
       e.preventDefault();
       this.keys[' '] = false;
       shootBtn.classList.remove('pressed');
@@ -171,6 +233,12 @@ class SpaceDefender {
     // Pause button
     pauseBtn.addEventListener('touchstart', (e) => {
       e.preventDefault();
+      e.stopPropagation();
+    });
+    
+    pauseBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       if (this.gameState === 'playing') {
         this.pauseGame();
       } else if (this.gameState === 'paused') {
@@ -183,12 +251,21 @@ class SpaceDefender {
       e.preventDefault();
     });
     
-    // Prevent pull-to-refresh
+    // Prevent pull-to-refresh and other gestures
     document.addEventListener('touchmove', (e) => {
-      if (e.touches.length > 1) {
-        e.preventDefault();
-      }
+      e.preventDefault();
     }, { passive: false });
+    
+    // Prevent default touch behaviors on buttons
+    const buttons = document.querySelectorAll('button, .mobile-btn');
+    buttons.forEach(button => {
+      button.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+      });
+      button.addEventListener('touchend', (e) => {
+        e.stopPropagation();
+      });
+    });
   }
 
   /**
@@ -345,6 +422,7 @@ class SpaceDefender {
    * Start a new game
    */
   startGame() {
+    console.log('Starting game...');
     this.gameState = 'playing';
     this.score = 0;
     this.lives = 3;
@@ -370,7 +448,7 @@ class SpaceDefender {
       console.warn('Background music failed to play:', error);
     }
     
-    console.log('Game started!');
+    console.log('Game started successfully!');
   }
 
   /**
@@ -929,7 +1007,7 @@ class SpaceDefender {
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Initializing Space Defender...');
-  new SpaceDefender();
+  window.game = new SpaceDefender();
 });
 
 // Handle page visibility changes to pause game
