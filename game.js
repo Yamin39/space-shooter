@@ -1,4 +1,3 @@
-
 /**
  * SPACE DEFENDER - Modern 2D Space Shooter Game
  * Built with HTML5 Canvas and modern JavaScript (ES6+)
@@ -93,8 +92,25 @@ class SpaceDefender {
     
     // UI button controls
     document.getElementById('startButton').addEventListener('click', () => this.startGame());
+    document.getElementById('startButton').addEventListener('touchend', (e) => {
+      e.preventDefault();
+      this.startGame();
+    });
+    
     document.getElementById('restartButton').addEventListener('click', () => this.restartGame());
+    document.getElementById('restartButton').addEventListener('touchend', (e) => {
+      e.preventDefault();
+      this.restartGame();
+    });
+    
     document.getElementById('mainMenuButton').addEventListener('click', () => this.showMainMenu());
+    document.getElementById('mainMenuButton').addEventListener('touchend', (e) => {
+      e.preventDefault();
+      this.showMainMenu();
+    });
+    
+    // Mobile controls
+    this.setupMobileControls();
     
     // Prevent default behavior for game keys
     document.addEventListener('keydown', (e) => {
@@ -102,6 +118,77 @@ class SpaceDefender {
         e.preventDefault();
       }
     });
+  }
+
+  /**
+   * Set up mobile touch controls
+   */
+  setupMobileControls() {
+    const leftBtn = document.getElementById('leftBtn');
+    const rightBtn = document.getElementById('rightBtn');
+    const shootBtn = document.getElementById('shootBtn');
+    const pauseBtn = document.getElementById('mobilePauseBtn');
+    
+    // Left button
+    leftBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      this.keys['a'] = true;
+      leftBtn.classList.add('pressed');
+    });
+    
+    leftBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      this.keys['a'] = false;
+      leftBtn.classList.remove('pressed');
+    });
+    
+    // Right button
+    rightBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      this.keys['d'] = true;
+      rightBtn.classList.add('pressed');
+    });
+    
+    rightBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      this.keys['d'] = false;
+      rightBtn.classList.remove('pressed');
+    });
+    
+    // Shoot button
+    shootBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      this.keys[' '] = true;
+      shootBtn.classList.add('pressed');
+    });
+    
+    shootBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      this.keys[' '] = false;
+      shootBtn.classList.remove('pressed');
+    });
+    
+    // Pause button
+    pauseBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (this.gameState === 'playing') {
+        this.pauseGame();
+      } else if (this.gameState === 'paused') {
+        this.resumeGame();
+      }
+    });
+    
+    // Prevent context menu on mobile
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+    
+    // Prevent pull-to-refresh
+    document.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
   }
 
   /**

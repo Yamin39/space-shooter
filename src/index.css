@@ -110,6 +110,9 @@ body {
   margin: 0.5rem;
   position: relative;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .btn-primary {
@@ -118,7 +121,7 @@ body {
   box-shadow: 0 4px 15px rgba(0, 245, 255, 0.4);
 }
 
-.btn-primary:hover {
+.btn-primary:hover, .btn-primary:active {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 245, 255, 0.6);
 }
@@ -129,7 +132,7 @@ body {
   border: 2px solid #00f5ff;
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover, .btn-secondary:active {
   background: #00f5ff;
   color: #000;
   transform: translateY(-2px);
@@ -376,5 +379,129 @@ body {
   100% {
     opacity: 0;
     transform: scale(0) translateY(-100px);
+  }
+}
+
+/* Mobile Controls */
+.mobile-controls {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: none;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 20px;
+  pointer-events: none;
+  z-index: 40;
+}
+
+.mobile-dpad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: all;
+}
+
+.dpad-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.mobile-btn {
+  width: 60px;
+  height: 60px;
+  background: rgba(0, 245, 255, 0.2);
+  border: 2px solid rgba(0, 245, 255, 0.5);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00f5ff;
+  font-size: 24px;
+  font-weight: bold;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.mobile-btn:active {
+  background: rgba(0, 245, 255, 0.4);
+  border-color: #00f5ff;
+  transform: scale(0.95);
+}
+
+.mobile-btn.pressed {
+  background: rgba(0, 245, 255, 0.6);
+  border-color: #00f5ff;
+  color: #000;
+}
+
+.shoot-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 0, 0.2);
+  border: 3px solid rgba(255, 255, 0, 0.5);
+  color: #ffff00;
+  font-size: 16px;
+  pointer-events: all;
+}
+
+.shoot-btn:active {
+  background: rgba(255, 255, 0, 0.4);
+  border-color: #ffff00;
+}
+
+.shoot-btn.pressed {
+  background: rgba(255, 255, 0, 0.6);
+  border-color: #ffff00;
+  color: #000;
+}
+
+.pause-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 64, 129, 0.2);
+  border: 2px solid rgba(255, 64, 129, 0.5);
+  border-radius: 8px;
+  color: #ff4081;
+  font-size: 14px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  z-index: 35;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.pause-btn:active {
+  background: rgba(255, 64, 129, 0.4);
+  border-color: #ff4081;
+}
+
+/* Show mobile controls on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .mobile-controls {
+    display: flex;
+  }
+  
+  .pause-btn {
+    display: flex;
+  }
+  
+  .btn-primary, .btn-secondary {
+    padding: 1.2rem 3rem;
+    font-size: 1.2rem;
+    min-height: 60px;
   }
 }
