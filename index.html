@@ -3,89 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Space Shooter - Modern 2D Indie Game</title>
-    <meta name="description" content="A modern 2D space shooter game built with HTML5 Canvas" />
-    <link rel="stylesheet" href="src/index.css">
+    <title>Space Defender - Modern 2D Space Shooter</title>
+    <meta name="description" content="A modern 2D space shooter game built with React and TypeScript" />
   </head>
   <body>
-    <div id="gameContainer">
-      <!-- Start Screen -->
-      <div id="startScreen" class="screen">
-        <div class="screen-content">
-          <h1 class="game-title">SPACE DEFENDER</h1>
-          <p class="game-subtitle">Defend Earth from alien invasion</p>
-          <button id="startButton" class="btn-primary">START GAME</button>
-          <div class="controls-info">
-            <p>Controls:</p>
-            <p>A/D or Arrow Keys - Move</p>
-            <p>Spacebar - Shoot</p>
-            <p>P - Pause</p>
-          </div>
-        </div>
-        <div class="stars-bg"></div>
-      </div>
-
-      <!-- Game Screen -->
-      <div id="gameScreen" class="screen hidden">
-        <canvas id="gameCanvas"></canvas>
-        
-        <!-- Game UI -->
-        <div id="gameUI">
-          <div class="ui-top">
-            <div class="score-display">
-              <span class="label">SCORE</span>
-              <span id="scoreValue">0</span>
-            </div>
-            <div class="health-display">
-              <span class="label">LIVES</span>
-              <div id="healthBar">
-                <div class="life-icon active"></div>
-                <div class="life-icon active"></div>
-                <div class="life-icon active"></div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Pause Overlay -->
-          <div id="pauseOverlay" class="overlay hidden">
-            <div class="overlay-content">
-              <h2>PAUSED</h2>
-              <p>Press P to resume</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Game Over Screen -->
-      <div id="gameOverScreen" class="screen hidden">
-        <div class="screen-content">
-          <h1 class="game-over-title">GAME OVER</h1>
-          <div class="final-score">
-            <p>Final Score</p>
-            <span id="finalScore">0</span>
-          </div>
-          <button id="restartButton" class="btn-primary">PLAY AGAIN</button>
-          <button id="mainMenuButton" class="btn-secondary">MAIN MENU</button>
-        </div>
-        <div class="stars-bg"></div>
-      </div>
-
-      <!-- Mobile Controls -->
-      <div id="mobileControls" class="mobile-controls">
-        <div class="mobile-dpad">
-          <div class="dpad-row">
-            <div class="mobile-btn" id="leftBtn">←</div>
-            <div class="mobile-btn" id="rightBtn">→</div>
-          </div>
-        </div>
-        
-        <div class="mobile-btn shoot-btn" id="shootBtn">FIRE</div>
-      </div>
-
-      <!-- Mobile Pause Button -->
-      <div id="mobilePauseBtn" class="pause-btn">⏸</div>
-    </div>
-
-    <script src="game.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
