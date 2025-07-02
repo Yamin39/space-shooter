@@ -89,25 +89,30 @@ const SpaceDefender = () => {
     if (!canvas) return;
 
     const resizeCanvas = () => {
-      const maxWidth = Math.min(window.innerWidth - 40, 1200);
-      const maxHeight = Math.min(window.innerHeight - 40, 800);
+      // Better mobile responsive sizing
+      const isMobile = window.innerWidth <= 768;
+      const padding = isMobile ? 10 : 40;
+      const maxWidth = window.innerWidth - padding;
+      const maxHeight = window.innerHeight - padding - (isMobile ? 200 : 0); // Extra space for mobile controls
       
       canvas.width = maxWidth;
-      canvas.height = maxHeight;
+      canvas.height = Math.max(maxHeight, 400); // Minimum height
       
       // Reset player position when canvas resizes
       playerRef.current = {
         ...playerRef.current,
         x: maxWidth / 2,
-        y: maxHeight - 80
+        y: canvas.height - 80
       };
     };
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('orientationchange', resizeCanvas);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('orientationchange', resizeCanvas);
     };
   }, []);
 
@@ -608,23 +613,25 @@ const SpaceDefender = () => {
 
       {/* Start Screen */}
       {gameState === 'start' && (
-        <div className="absolute inset-0 flex items-center justify-center z-20">
-          <div className="text-center space-y-8 p-8">
-            <h1 className="text-6xl md:text-8xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent animate-pulse">
+        <div className="absolute inset-0 flex items-center justify-center z-20 px-4">
+          <div className="text-center space-y-4 sm:space-y-8 p-4 sm:p-8 max-w-lg">
+            <h1 className="text-4xl sm:text-6xl md:text-8xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent animate-pulse">
               SPACE DEFENDER
             </h1>
-            <p className="text-xl text-blue-300 font-medium">Defend Earth from alien invasion</p>
+            <p className="text-lg sm:text-xl text-blue-300 font-medium">Defend Earth from alien invasion</p>
             <Button 
               onClick={startGame}
-              className="px-12 py-6 text-xl font-bold bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-black shadow-lg shadow-cyan-500/25 transform hover:scale-105 transition-all duration-200"
+              className="px-8 py-4 sm:px-12 sm:py-6 text-lg sm:text-xl font-bold bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-black shadow-lg shadow-cyan-500/25 transform hover:scale-105 transition-all duration-200 w-full sm:w-auto min-h-[60px]"
+              style={{ WebkitTapHighlightColor: 'transparent' }}
             >
               START GAME
             </Button>
-            <div className="text-sm text-gray-400 space-y-1 mt-8">
+            <div className="text-xs sm:text-sm text-gray-400 space-y-1 mt-4 sm:mt-8">
               <p className="text-cyan-400 font-semibold">Controls:</p>
-              <p>A/D or Arrow Keys - Move</p>
-              <p>Spacebar - Shoot</p>
-              <p>P - Pause</p>
+              <p className="hidden sm:block">A/D or Arrow Keys - Move</p>
+              <p className="hidden sm:block">Spacebar - Shoot</p>
+              <p className="hidden sm:block">P - Pause</p>
+              <p className="block sm:hidden">Use touch controls to play</p>
             </div>
           </div>
         </div>
@@ -635,29 +642,35 @@ const SpaceDefender = () => {
         <>
           <canvas 
             ref={canvasRef}
-            className="border-2 border-cyan-500/30 rounded-lg shadow-2xl shadow-cyan-500/20 mx-auto mt-5"
+            className="border-2 border-cyan-500/30 rounded-lg shadow-2xl shadow-cyan-500/20 mx-auto block max-w-full max-h-[calc(100vh-240px)] sm:max-h-[calc(100vh-80px)]"
+            style={{ 
+              touchAction: 'none',
+              WebkitTouchCallout: 'none',
+              WebkitUserSelect: 'none',
+              userSelect: 'none'
+            }}
           />
           
           {/* Game UI */}
           <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-10">
-            <div className="flex justify-between items-start p-8">
-              <div className="bg-black/70 backdrop-blur-md px-6 py-4 rounded-lg border border-cyan-500/30">
-                <div className="text-sm text-cyan-400 font-bold mb-2 tracking-wider">SCORE</div>
-                <div className="text-3xl font-bold text-white">{score}</div>
+            <div className="flex justify-between items-start p-3 sm:p-8">
+              <div className="bg-black/70 backdrop-blur-md px-3 py-2 sm:px-6 sm:py-4 rounded-lg border border-cyan-500/30">
+                <div className="text-xs sm:text-sm text-cyan-400 font-bold mb-1 sm:mb-2 tracking-wider">SCORE</div>
+                <div className="text-xl sm:text-3xl font-bold text-white">{score}</div>
               </div>
-              <div className="bg-black/70 backdrop-blur-md px-6 py-4 rounded-lg border border-cyan-500/30">
-                <div className="text-sm text-cyan-400 font-bold mb-2 tracking-wider">LIVES</div>
-                <div className="flex space-x-2">
+              <div className="bg-black/70 backdrop-blur-md px-3 py-2 sm:px-6 sm:py-4 rounded-lg border border-cyan-500/30">
+                <div className="text-xs sm:text-sm text-cyan-400 font-bold mb-1 sm:mb-2 tracking-wider">LIVES</div>
+                <div className="flex space-x-1 sm:space-x-2">
                   {[...Array(3)].map((_, i) => (
                     <div 
                       key={i} 
-                      className={`w-6 h-6 rounded-full border-2 ${
+                      className={`w-4 h-4 sm:w-6 sm:h-6 rounded-full border-2 ${
                         i < lives 
                           ? 'bg-gradient-to-r from-pink-500 to-purple-500 border-pink-500 shadow-lg shadow-pink-500/50' 
                           : 'bg-gray-600 border-gray-500'
                       }`}
                     >
-                      {i < lives && <div className="text-white text-center text-sm leading-5">♥</div>}
+                      {i < lives && <div className="text-white text-center text-xs sm:text-sm leading-3 sm:leading-5">♥</div>}
                     </div>
                   ))}
                 </div>
@@ -705,21 +718,43 @@ const SpaceDefender = () => {
         </div>
       )}
 
-      {/* Mobile Controls */}
-      <div className="md:hidden fixed bottom-5 left-0 right-0 flex justify-between items-end px-5 pointer-events-none z-40">
-        <div className="flex flex-col items-center space-y-3 pointer-events-auto">
-          <div className="flex space-x-3">
+      {/* Mobile Controls - Always visible on touch devices */}
+      <div className="block sm:hidden fixed bottom-2 left-0 right-0 flex justify-between items-end px-3 pointer-events-none z-40">
+        <div className="flex flex-col items-center space-y-2 pointer-events-auto">
+          <div className="flex space-x-2">
             <button
-              onTouchStart={() => handleTouchStart('a')}
-              onTouchEnd={() => handleTouchEnd('a')}
-              className="w-16 h-16 bg-cyan-500/20 border-2 border-cyan-500/50 rounded-xl flex items-center justify-center text-cyan-400 text-2xl font-bold backdrop-blur-md active:bg-cyan-500/40 active:border-cyan-500 transition-all"
+              onTouchStart={(e) => {
+                e.preventDefault();
+                handleTouchStart('a');
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                handleTouchEnd('a');
+              }}
+              onTouchCancel={(e) => {
+                e.preventDefault();
+                handleTouchEnd('a');
+              }}
+              className="w-14 h-14 bg-cyan-500/30 border-2 border-cyan-500/60 rounded-xl flex items-center justify-center text-cyan-300 text-xl font-bold backdrop-blur-md active:bg-cyan-500/50 active:border-cyan-400 transition-all select-none"
+              style={{ WebkitTapHighlightColor: 'transparent' }}
             >
               ←
             </button>
             <button
-              onTouchStart={() => handleTouchStart('d')}
-              onTouchEnd={() => handleTouchEnd('d')}
-              className="w-16 h-16 bg-cyan-500/20 border-2 border-cyan-500/50 rounded-xl flex items-center justify-center text-cyan-400 text-2xl font-bold backdrop-blur-md active:bg-cyan-500/40 active:border-cyan-500 transition-all"
+              onTouchStart={(e) => {
+                e.preventDefault();
+                handleTouchStart('d');
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                handleTouchEnd('d');
+              }}
+              onTouchCancel={(e) => {
+                e.preventDefault();
+                handleTouchEnd('d');
+              }}
+              className="w-14 h-14 bg-cyan-500/30 border-2 border-cyan-500/60 rounded-xl flex items-center justify-center text-cyan-300 text-xl font-bold backdrop-blur-md active:bg-cyan-500/50 active:border-cyan-400 transition-all select-none"
+              style={{ WebkitTapHighlightColor: 'transparent' }}
             >
               →
             </button>
@@ -727,9 +762,20 @@ const SpaceDefender = () => {
         </div>
         
         <button
-          onTouchStart={() => handleTouchStart(' ')}
-          onTouchEnd={() => handleTouchEnd(' ')}
-          className="w-20 h-20 bg-yellow-500/20 border-3 border-yellow-500/50 rounded-full flex items-center justify-center text-yellow-400 text-lg font-bold backdrop-blur-md active:bg-yellow-500/40 active:border-yellow-500 transition-all pointer-events-auto"
+          onTouchStart={(e) => {
+            e.preventDefault();
+            handleTouchStart(' ');
+          }}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            handleTouchEnd(' ');
+          }}
+          onTouchCancel={(e) => {
+            e.preventDefault();
+            handleTouchEnd(' ');
+          }}
+          className="w-16 h-16 bg-yellow-500/30 border-2 border-yellow-500/60 rounded-full flex items-center justify-center text-yellow-300 text-sm font-bold backdrop-blur-md active:bg-yellow-500/50 active:border-yellow-400 transition-all pointer-events-auto select-none"
+          style={{ WebkitTapHighlightColor: 'transparent' }}
         >
           FIRE
         </button>
@@ -739,7 +785,8 @@ const SpaceDefender = () => {
       {(gameState === 'playing' || gameState === 'paused') && (
         <button
           onClick={() => setGameState(gameState === 'playing' ? 'paused' : 'playing')}
-          className="md:hidden fixed top-5 right-5 w-12 h-12 bg-pink-500/20 border-2 border-pink-500/50 rounded-lg flex items-center justify-center text-pink-400 text-sm backdrop-blur-md active:bg-pink-500/40 active:border-pink-500 transition-all z-35"
+          className="block sm:hidden fixed top-3 right-3 w-10 h-10 bg-pink-500/30 border-2 border-pink-500/60 rounded-lg flex items-center justify-center text-pink-300 text-xs backdrop-blur-md active:bg-pink-500/50 active:border-pink-400 transition-all z-35 select-none"
+          style={{ WebkitTapHighlightColor: 'transparent' }}
         >
           ⏸
         </button>
