@@ -91,12 +91,13 @@ const SpaceDefender = () => {
     const resizeCanvas = () => {
       // Better mobile responsive sizing
       const isMobile = window.innerWidth <= 768;
-      const padding = isMobile ? 10 : 40;
+      const padding = isMobile ? 20 : 40;
       const maxWidth = window.innerWidth - padding;
-      const maxHeight = window.innerHeight - padding - (isMobile ? 200 : 0); // Extra space for mobile controls
+      // Reduce the mobile control space from 200 to 120 for better canvas size
+      const maxHeight = window.innerHeight - padding - (isMobile ? 120 : 0);
       
       canvas.width = maxWidth;
-      canvas.height = Math.max(maxHeight, 400); // Minimum height
+      canvas.height = Math.max(maxHeight, isMobile ? 500 : 400); // Larger minimum height for mobile
       
       // Reset player position when canvas resizes
       playerRef.current = {
@@ -642,7 +643,7 @@ const SpaceDefender = () => {
         <>
           <canvas 
             ref={canvasRef}
-            className="border-2 border-cyan-500/30 rounded-lg shadow-2xl shadow-cyan-500/20 mx-auto block max-w-full max-h-[calc(100vh-240px)] sm:max-h-[calc(100vh-80px)]"
+            className="border-2 border-cyan-500/30 rounded-lg shadow-2xl shadow-cyan-500/20 mx-auto block max-w-full max-h-[calc(100vh-140px)] sm:max-h-[calc(100vh-80px)]"
             style={{ 
               touchAction: 'none',
               WebkitTouchCallout: 'none',
